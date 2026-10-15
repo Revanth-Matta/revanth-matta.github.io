@@ -46,3 +46,13 @@ a:focus-visible,button:focus-visible{outline:3px solid #80bdff;outline-offset:2p
 .achievement-wide{grid-column:1/-1}
 .achievement-wide img{height:320px}
 @media(max-width:900px){.achievements-grid{grid-template-columns:1fr}.achievement-wide img{height:240px}}
+
+/* Achievement image lightbox */
+.lightbox{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(4,9,20,.92);backdrop-filter:blur(8px)}
+.lightbox.open{display:flex}
+.lightbox-content{position:relative;max-width:min(1000px,94vw);max-height:90vh}
+.lightbox-content img{display:block;width:auto;max-width:100%;max-height:85vh;border-radius:16px;border:1px solid var(--border);box-shadow:0 30px 80px rgba(0,0,0,.55);background:#fff}
+.lightbox-close{position:absolute;top:-14px;right:-14px;width:42px;height:42px;border:none;border-radius:50%;font-size:1.4rem;font-weight:700;color:#04121f;background:linear-gradient(135deg,var(--accent),var(--accent-2));cursor:pointer;box-shadow:0 10px 25px rgba(0,0,0,.35)}
+.lightbox-caption{margin-top:14px;text-align:center;color:var(--muted);font-size:.95rem}
+.achievement-card img{cursor:zoom-in}
+@media(max-width:560px){.lightbox{padding:14px}.lightbox-close{top:-10px;right:-6px}}
