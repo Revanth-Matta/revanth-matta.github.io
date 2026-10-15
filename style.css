@@ -35,119 +35,14 @@ h1,h2,h3{line-height:1.2;margin:0 0 16px}h1{font-size:clamp(2.4rem,5vw,3.8rem)}h
 @media(max-width:560px){.education-grid{grid-template-columns:1fr}.section{padding:65px 0}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 a:focus-visible,button:focus-visible{outline:3px solid #80bdff;outline-offset:2px}
+
 /* Achievements & Certification */
-.achievements-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 22px;
-  margin-top: 35px;
-}
-
-.achievement-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  overflow: hidden;
-  padding: 0;
-  transition: transform 0.25s ease, border-color 0.25s ease;
-}
-
-.achievement-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--accent);
-}
-
-.achievement-card img {
-  width: 100%;
-  height: 240px;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-  background: #fff;
-}
-
-.achievement-body {
-  padding: 22px;
-}
-
-.achievement-org {
-  color: var(--accent);
-  font-weight: 600;
-  margin-top: -6px;
-}
-
-.achievement-wide {
-  grid-column: 1 / -1;
-}
-
-.achievement-wide img {
-  height: 320px;
-}
-
-@media (max-width: 900px) {
-  .achievements-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .achievement-wide img {
-    height: 240px;
-  }
-}
-/* Achievements & Certification */
-.achievements-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 22px;
-  margin-top: 35px;
-}
-
-.achievement-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  overflow: hidden;
-  padding: 0;
-  transition: transform 0.25s ease, border-color 0.25s ease;
-}
-
-.achievement-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--accent);
-}
-
-.achievement-card img {
-  width: 100%;
-  height: 240px;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-  background: #fff;
-}
-
-.achievement-body {
-  padding: 22px;
-}
-
-.achievement-org {
-  color: var(--accent);
-  font-weight: 600;
-  margin-top: -6px;
-}
-
-.achievement-wide {
-  grid-column: 1 / -1;
-}
-
-.achievement-wide img {
-  height: 320px;
-}
-
-@media (max-width: 900px) {
-  .achievements-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .achievement-wide img {
-    height: 240px;
-  }
-}
+.achievements-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:35px}
+.achievement-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;padding:0;transition:transform .25s ease,border-color .25s ease}
+.achievement-card:hover{transform:translateY(-6px);border-color:var(--accent)}
+.achievement-card img{width:100%;height:240px;object-fit:cover;object-position:center;display:block;background:#fff}
+.achievement-body{padding:22px}
+.achievement-org{color:var(--accent);font-weight:600;margin-top:-6px}
+.achievement-wide{grid-column:1/-1}
+.achievement-wide img{height:320px}
+@media(max-width:900px){.achievements-grid{grid-template-columns:1fr}.achievement-wide img{height:240px}}
