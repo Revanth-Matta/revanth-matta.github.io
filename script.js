@@ -42,3 +42,27 @@ document.addEventListener("keydown",event=>{
     closeLightbox();
   }
 });
+/* Scroll reveal animations */
+document.addEventListener("DOMContentLoaded",function(){
+  const revealElements=document.querySelectorAll(".reveal");
+
+  if(!("IntersectionObserver" in window)){
+    revealElements.forEach(function(element){
+      element.classList.add("visible");
+    });
+    return;
+  }
+
+  const revealObserver=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add("visible");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  },{threshold:.15});
+
+  revealElements.forEach(function(element){
+    revealObserver.observe(element);
+  });
+});
