@@ -56,3 +56,24 @@ a:focus-visible,button:focus-visible{outline:3px solid #80bdff;outline-offset:2p
 .lightbox-caption{margin-top:14px;text-align:center;color:var(--muted);font-size:.95rem}
 .achievement-card img{cursor:zoom-in}
 @media(max-width:560px){.lightbox{padding:14px}.lightbox-close{top:-10px;right:-6px}}
+/* Scroll reveal animations */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+.hero-text>*{opacity:0;transform:translateY(22px);animation:heroFade .8s ease forwards}
+.hero-text .eyebrow{animation-delay:.05s}
+.hero-text h1{animation-delay:.15s}
+.hero-text h2{animation-delay:.25s}
+.hero-text .hero-meta{animation-delay:.35s}
+.hero-text .lead{animation-delay:.45s}
+.hero-text .hero-actions{animation-delay:.55s}
+
+@keyframes heroFade{to{opacity:1;transform:translateY(0)}}
+
+.achievement-card img{transition:transform .35s ease}
+.achievement-card:hover img{transform:scale(1.04)}
+
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1!important;transform:none!important}
+  .hero-text>*{opacity:1!important;transform:none!important;animation:none!important}
+}
