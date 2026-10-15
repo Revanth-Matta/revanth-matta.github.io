@@ -139,7 +139,9 @@
         <div class="achievements-grid">
           <article class="achievement-card">
             <img
+              class="achievement-image"
               src="bravo-1.jpeg"
+              data-full="bravo-1.jpeg"
               alt="First Bravo Award certificate from Tech Mahindra"
             >
             <div class="achievement-body">
@@ -155,7 +157,9 @@
 
           <article class="achievement-card">
             <img
+              class="achievement-image"
               src="bravo-2.jpeg"
+              data-full="bravo-2.jpeg"
               alt="Second Bravo Award certificate from Tech Mahindra"
             >
             <div class="achievement-body">
@@ -171,7 +175,9 @@
 
           <article class="achievement-card">
             <img
+              class="achievement-image"
               src="client.jpeg"
+              data-full="client.jpeg"
               alt="Client Appreciation Award certificate from Tech Mahindra"
             >
             <div class="achievement-body">
@@ -187,7 +193,9 @@
 
           <article class="achievement-card">
             <img
+              class="achievement-image"
               src="job-well-done.jpeg"
+              data-full="job-well-done.jpeg"
               alt="Job Well Done certificate from Tech Mahindra"
             >
             <div class="achievement-body">
@@ -203,7 +211,9 @@
 
           <article class="achievement-card">
             <img
+              class="achievement-image"
               src="star-performer.jpeg"
+              data-full="star-performer.jpeg"
               alt="Star Performer Badge from Hinduja Global Solutions"
             >
             <div class="achievement-body">
@@ -218,7 +228,9 @@
 
           <article class="achievement-card achievement-wide">
             <img
+              class="achievement-image"
               src="six-sigma.jpg"
+              data-full="six-sigma.jpg"
               alt="Lean Six Sigma White Belt certificate from AIGPE"
             >
             <div class="achievement-body">
@@ -300,6 +312,15 @@
   </main>
 
   <footer class="footer"><div class="container"><p>© 2026 Revanth Kumar Matta · Healthcare Operations & Quality Assurance</p></div></footer>
+
+  <div class="lightbox" id="achievementLightbox" role="dialog" aria-modal="true" aria-label="Achievement image viewer">
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close image viewer">&times;</button>
+      <img id="lightboxImage" src="" alt="">
+      <p class="lightbox-caption" id="lightboxCaption"></p>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
