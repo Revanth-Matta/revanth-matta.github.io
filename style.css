@@ -1069,9 +1069,22 @@ ul {
 
 .bravo-images {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   background: var(--border);
+}
+
+.bravo-images .recognition-image-trigger {
+  overflow: hidden;
+}
+
+.bravo-images .recognition-image-trigger img {
+  transition: transform 300ms var(--ease-out);
+}
+
+.bravo-images .recognition-image-trigger:hover img,
+.bravo-images .recognition-image-trigger:focus-visible img {
+  transform: scale(1.05);
 }
 
 .recognition-image-trigger img {
@@ -1596,8 +1609,6 @@ ul {
     transform: scaleY(1);
   }
 }
-
-
 /* =========================================================
    15. Hover states for pointer devices
    ========================================================= */
@@ -1852,6 +1863,10 @@ ul {
 
   .bravo-images .recognition-image-trigger img {
     height: 260px;
+  }
+
+  .bravo-images {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .footer-inner {
