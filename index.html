@@ -750,7 +750,7 @@
             data-filter="eligibility"
             aria-pressed="false"
           >
-                      Eligibility &amp; Account Updates
+                                Eligibility &amp; Account Updates
           </button>
 
           <button
@@ -1054,13 +1054,14 @@
                 class="image-trigger ribbon-image-trigger"
                 data-lightbox
                 data-full="bravo-award.jpg"
-                data-caption="Revanth Kumar Matta receiving the Bravo Award — Tech Mahindra"
-                aria-label="View Bravo Award recognition"
+                data-images="bravo-award.jpg,bravo-1.jpeg,bravo-2.jpeg"
+                data-caption="Bravo Award recognition and certificates — Tech Mahindra"
+                aria-label="View Bravo Award photo and certificates"
                 aria-haspopup="dialog"
                 aria-controls="image-viewer"
                 disabled
               >
-                View proof
+                View all Bravo proofs
                 <span aria-hidden="true">↗</span>
               </button>
             </div>
@@ -1357,6 +1358,32 @@
 
       <div id="viewer-stage" class="viewer-stage" aria-busy="false">
         <img id="viewer-image" alt="">
+
+        <button
+          id="viewer-prev"
+          class="viewer-nav viewer-prev"
+          type="button"
+          aria-label="Previous image"
+          hidden
+        >
+          ‹
+        </button>
+
+        <button
+          id="viewer-next"
+          class="viewer-nav viewer-next"
+          type="button"
+          aria-label="Next image"
+          hidden
+        >
+          ›
+        </button>
+
+        <p
+          id="viewer-counter"
+          class="viewer-counter"
+          hidden
+        ></p>
 
         <p
           id="viewer-status"
