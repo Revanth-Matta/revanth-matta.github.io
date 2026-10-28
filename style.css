@@ -1672,7 +1672,80 @@ ul {
 
 
 /* =========================================================
-   16. Motion system
+   16. Multi-image viewer slider
+   ========================================================= */
+
+.viewer-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  color: var(--text);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.viewer-prev {
+  left: 14px;
+}
+
+.viewer-next {
+  right: 14px;
+}
+
+.viewer-nav:hover,
+.viewer-nav:focus-visible {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.viewer-counter {
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  z-index: 2;
+  padding: 5px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  color: var(--text);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+@media (max-width: 700px) {
+  .viewer-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.35rem;
+  }
+
+  .viewer-prev {
+    left: 8px;
+  }
+
+  .viewer-next {
+    right: 8px;
+  }
+}
+
+
+/* =========================================================
+   17. Motion system
    Content is visible unless JavaScript explicitly arms it.
    ========================================================= */
 
@@ -1853,7 +1926,7 @@ ul {
 
 
 /* =========================================================
-   17. Hover states for pointer devices
+   18. Hover states for pointer devices
    ========================================================= */
 
 @media (hover: hover) and (pointer: fine) {
@@ -1916,6 +1989,13 @@ ul {
     background: var(--card-hover);
   }
 
+  .viewer-nav:hover,
+  .viewer-nav:focus-visible {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--text);
+  }
+
   .viewer-original:hover,
   .back-to-top:hover {
     text-decoration: underline;
@@ -1925,7 +2005,7 @@ ul {
 
 
 /* =========================================================
-   18. Tablet and mobile layouts
+   19. Tablet and mobile layouts
    ========================================================= */
 
 @media (max-width: 1100px) {
@@ -2383,6 +2463,20 @@ ul {
     max-height: calc(100dvh - 250px);
   }
 
+  .viewer-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.35rem;
+  }
+
+  .viewer-prev {
+    left: 8px;
+  }
+
+  .viewer-next {
+    right: 8px;
+  }
+
   .viewer-footer {
     align-items: flex-start;
     flex-direction: column;
@@ -2464,7 +2558,7 @@ ul {
 
 
 /* =========================================================
-   19. Reduced motion
+   20. Reduced motion
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
@@ -2514,7 +2608,7 @@ ul {
 
 
 /* =========================================================
-   20. Print
+   21. Print
    ========================================================= */
 
 @media print {
