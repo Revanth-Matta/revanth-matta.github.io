@@ -164,16 +164,110 @@
           </div>
 
           <ul
-            class="achievement-chips hero-enter"
+            class="achievement-tiles hero-enter"
             data-hero-order="7"
             aria-label="Key achievements and credentials"
           >
-            <li>95%+ Audit Compliance</li>
-            <li>Error Rate Under 5%</li>
-            <li>20% Accuracy Improvement</li>
-            <li>Two-time Bravo Award</li>
-            <li>Client Appreciation Award</li>
-            <li>Lean Six Sigma White Belt</li>
+            <li class="achievement-tile">
+              <span class="achievement-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"></path>
+                  <path d="M9 12l2 2 4-4"></path>
+                </svg>
+              </span>
+              <span class="achievement-text">95%+ Audit Compliance</span>
+            </li>
+
+            <li class="achievement-tile">
+              <span class="achievement-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="8"></circle>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </span>
+              <span class="achievement-text">Error Rate Under 5%</span>
+            </li>
+
+            <li class="achievement-tile">
+              <span class="achievement-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 17l5-5 4 3 7-8"></path>
+                  <path d="M15 7h5v5"></path>
+                </svg>
+              </span>
+              <span class="achievement-text">20% Accuracy Improvement</span>
+            </li>
+
+            <li class="achievement-tile achievement-tile-interactive">
+              <button
+                type="button"
+                class="achievement-trigger"
+                data-lightbox
+                data-full="bravo-award.jpg"
+                data-caption="Revanth Kumar Matta receiving the Bravo Award — Tech Mahindra"
+                aria-label="View Bravo Award recognition"
+                aria-haspopup="dialog"
+                aria-controls="image-viewer"
+                disabled
+              >
+                <span class="achievement-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 21h8"></path>
+                    <path d="M12 17v4"></path>
+                    <path d="M7 4h10v5a5 5 0 01-10 0V4z"></path>
+                    <path d="M7 6H4v2a3 3 0 003 3"></path>
+                    <path d="M17 6h3v2a3 3 0 01-3 3"></path>
+                  </svg>
+                </span>
+                <span class="achievement-text">Two-time Bravo Award</span>
+                <span class="achievement-proof">View proof</span>
+              </button>
+            </li>
+
+            <li class="achievement-tile achievement-tile-interactive">
+              <button
+                type="button"
+                class="achievement-trigger"
+                data-lightbox
+                data-full="client.jpeg"
+                data-caption="Client Appreciation Award — Tech Mahindra"
+                aria-label="View Client Appreciation Award certificate"
+                aria-haspopup="dialog"
+                aria-controls="image-viewer"
+                disabled
+              >
+                <span class="achievement-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.2l5.9-.9L12 3z"></path>
+                  </svg>
+                </span>
+                <span class="achievement-text">Client Appreciation Award</span>
+                <span class="achievement-proof">View proof</span>
+              </button>
+            </li>
+
+            <li class="achievement-tile achievement-tile-interactive">
+              <button
+                type="button"
+                class="achievement-trigger"
+                data-lightbox
+                data-full="six-sigma.jpg"
+                data-caption="Lean Six Sigma White Belt certificate — AIGPE"
+                aria-label="View Lean Six Sigma White Belt certificate"
+                aria-haspopup="dialog"
+                aria-controls="image-viewer"
+                disabled
+              >
+                <span class="achievement-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 15a5 5 0 100-10 5 5 0 000 10z"></path>
+                    <path d="M8.5 13.5L7 21l5-2.5L17 21l-1.5-7.5"></path>
+                  </svg>
+                </span>
+                <span class="achievement-text">Lean Six Sigma White Belt</span>
+                <span class="achievement-proof">View proof</span>
+              </button>
+            </li>
           </ul>
 
           <p class="hero-location hero-enter" data-hero-order="8">
@@ -932,219 +1026,181 @@
           </p>
         </header>
 
-        <div class="recognition-grid" data-stagger>
+        <div class="recognition-ribbons" data-stagger>
 
-          <article
-            class="recognition-card recognition-card-wide"
-            data-motion="slide-up"
-          >
-            <div class="bravo-images">
-              <button
-                type="button"
-                class="image-trigger recognition-image-trigger"
-                data-lightbox
-                data-full="bravo-1.jpeg"
-                data-caption="Bravo Award certificate 1 — Tech Mahindra"
-                aria-label="Enlarge Bravo Award certificate 1 from Tech Mahindra"
-                aria-haspopup="dialog"
-                aria-controls="image-viewer"
-                disabled
-              >
-                <img
-                  src="bravo-1.jpeg"
-                  alt="Bravo Award certificate 1 from Tech Mahindra"
-                  loading="lazy"
-                  decoding="async"
-                >
-                <span class="image-view-hint" aria-hidden="true">
-                  View certificate ↗
-                </span>
-              </button>
-
-              <button
-                type="button"
-                class="image-trigger recognition-image-trigger"
-                data-lightbox
-                data-full="bravo-2.jpeg"
-                data-caption="Bravo Award certificate 2 — Tech Mahindra"
-                aria-label="Enlarge Bravo Award certificate 2 from Tech Mahindra"
-                aria-haspopup="dialog"
-                aria-controls="image-viewer"
-                disabled
-              >
-                <img
-                  src="bravo-2.jpeg"
-                  alt="Bravo Award certificate 2 from Tech Mahindra"
-                  loading="lazy"
-                  decoding="async"
-                >
-                <span class="image-view-hint" aria-hidden="true">
-                  View certificate ↗
-                </span>
-              </button>
-
-              <button
-                type="button"
-                class="image-trigger recognition-image-trigger"
-                data-lightbox
-                data-full="bravo-award.jpg"
-                data-caption="Receiving the Bravo Award — Tech Mahindra"
-                aria-label="Enlarge photo of Revanth Kumar Matta receiving the Bravo Award from the client"
-                aria-haspopup="dialog"
-                aria-controls="image-viewer"
-                disabled
-              >
-                <img
-                  src="bravo-award.jpg"
-                  alt="Revanth Kumar Matta receiving the Bravo Award from the client"
-                  loading="lazy"
-                  decoding="async"
-                >
-                <span class="image-view-hint" aria-hidden="true">
-                  View recognition ↗
-                </span>
-              </button>
+          <article class="recognition-ribbon" data-motion="slide-up">
+            <div class="ribbon-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 21h8"></path>
+                <path d="M12 17v4"></path>
+                <path d="M7 4h10v5a5 5 0 01-10 0V4z"></path>
+                <path d="M7 6H4v2a3 3 0 003 3"></path>
+                <path d="M17 6h3v2a3 3 0 01-3 3"></path>
+              </svg>
             </div>
 
-            <div class="recognition-body">
-              <span class="tag">Two-time Recipient</span>
+            <div class="ribbon-body">
+              <span class="ribbon-tag">Two-time Recipient</span>
               <h3>Bravo Award</h3>
               <p class="recognition-org">Tech Mahindra</p>
               <p>
                 Received the Bravo Award on two occasions in separate years.
               </p>
             </div>
+
+            <div class="ribbon-proof">
+              <button
+                type="button"
+                class="image-trigger ribbon-image-trigger"
+                data-lightbox
+                data-full="bravo-award.jpg"
+                data-caption="Revanth Kumar Matta receiving the Bravo Award — Tech Mahindra"
+                aria-label="View Bravo Award recognition"
+                aria-haspopup="dialog"
+                aria-controls="image-viewer"
+                disabled
+              >
+                View proof
+                <span aria-hidden="true">↗</span>
+              </button>
+            </div>
           </article>
 
-          <article class="recognition-card" data-motion="slide-up">
-            <button
-              type="button"
-              class="image-trigger recognition-image-trigger"
-              data-lightbox
-              data-full="client.jpeg"
-              data-caption="Client Appreciation Award — Tech Mahindra"
-              aria-label="Enlarge Client Appreciation Award from Tech Mahindra"
-              aria-haspopup="dialog"
-              aria-controls="image-viewer"
-              disabled
-            >
-              <img
-                src="client.jpeg"
-                alt="Client Appreciation Award certificate from Tech Mahindra"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="image-view-hint" aria-hidden="true">
-                View certificate ↗
-              </span>
-            </button>
+          <article class="recognition-ribbon" data-motion="slide-up">
+            <div class="ribbon-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.2l5.9-.9L12 3z"></path>
+              </svg>
+            </div>
 
-            <div class="recognition-body">
-              <span class="tag">Recognition</span>
+            <div class="ribbon-body">
+              <span class="ribbon-tag">Recognition</span>
               <h3>Client Appreciation Award</h3>
               <p class="recognition-org">Tech Mahindra</p>
               <p>
                 Received client appreciation recognition at Tech Mahindra.
               </p>
             </div>
+
+            <div class="ribbon-proof">
+              <button
+                type="button"
+                class="image-trigger ribbon-image-trigger"
+                data-lightbox
+                data-full="client.jpeg"
+                data-caption="Client Appreciation Award — Tech Mahindra"
+                aria-label="View Client Appreciation Award certificate"
+                aria-haspopup="dialog"
+                aria-controls="image-viewer"
+                disabled
+              >
+                View certificate
+                <span aria-hidden="true">↗</span>
+              </button>
+            </div>
           </article>
 
-          <article class="recognition-card" data-motion="slide-up">
-            <button
-              type="button"
-              class="image-trigger recognition-image-trigger"
-              data-lightbox
-              data-full="job-well-done.jpeg"
-              data-caption="Job Well Done certificate — Tech Mahindra"
-              aria-label="Enlarge Job Well Done certificate from Tech Mahindra"
-              aria-haspopup="dialog"
-              aria-controls="image-viewer"
-              disabled
-            >
-              <img
-                src="job-well-done.jpeg"
-                alt="Job Well Done certificate from Tech Mahindra"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="image-view-hint" aria-hidden="true">
-                View certificate ↗
-              </span>
-            </button>
+          <article class="recognition-ribbon" data-motion="slide-up">
+            <div class="ribbon-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6L9 17l-5-5"></path>
+              </svg>
+            </div>
 
-            <div class="recognition-body">
-              <span class="tag">Recognition</span>
+            <div class="ribbon-body">
+              <span class="ribbon-tag">Recognition</span>
               <h3>Job Well Done Certificate</h3>
               <p class="recognition-org">Tech Mahindra</p>
               <p>
                 Received a Job Well Done certificate at Tech Mahindra.
               </p>
             </div>
+
+            <div class="ribbon-proof">
+              <button
+                type="button"
+                class="image-trigger ribbon-image-trigger"
+                data-lightbox
+                data-full="job-well-done.jpeg"
+                data-caption="Job Well Done certificate — Tech Mahindra"
+                aria-label="View Job Well Done certificate"
+                aria-haspopup="dialog"
+                aria-controls="image-viewer"
+                disabled
+              >
+                View certificate
+                <span aria-hidden="true">↗</span>
+              </button>
+            </div>
           </article>
 
-          <article class="recognition-card" data-motion="slide-up">
-            <button
-              type="button"
-              class="image-trigger recognition-image-trigger"
-              data-lightbox
-              data-full="star-performer.jpeg"
-              data-caption="Star Performer recognition — Hinduja Global Solutions"
-              aria-label="Enlarge Star Performer recognition from Hinduja Global Solutions"
-              aria-haspopup="dialog"
-              aria-controls="image-viewer"
-              disabled
-            >
-              <img
-                src="star-performer.jpeg"
-                alt="Star Performer Badge from Hinduja Global Solutions"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="image-view-hint" aria-hidden="true">
-                View recognition ↗
-              </span>
-            </button>
+          <article class="recognition-ribbon" data-motion="slide-up">
+            <div class="ribbon-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="9" r="5"></circle>
+                <path d="M8.5 13.5L7 21l5-2.5L17 21l-1.5-7.5"></path>
+              </svg>
+            </div>
 
-            <div class="recognition-body">
-              <span class="tag">Recognition</span>
+            <div class="ribbon-body">
+              <span class="ribbon-tag">Recognition</span>
               <h3>Star Performer Badge</h3>
               <p class="recognition-org">Hinduja Global Solutions</p>
               <p>
                 Received Star Performer recognition at Hinduja Global Solutions.
               </p>
             </div>
+
+            <div class="ribbon-proof">
+              <button
+                type="button"
+                class="image-trigger ribbon-image-trigger"
+                data-lightbox
+                data-full="star-performer.jpeg"
+                data-caption="Star Performer recognition — Hinduja Global Solutions"
+                aria-label="View Star Performer recognition"
+                aria-haspopup="dialog"
+                aria-controls="image-viewer"
+                disabled
+              >
+                View recognition
+                <span aria-hidden="true">↗</span>
+              </button>
+            </div>
           </article>
 
-          <article class="recognition-card" data-motion="slide-up">
-            <button
-              type="button"
-              class="image-trigger recognition-image-trigger"
-              data-lightbox
-              data-full="six-sigma.jpg"
-              data-caption="Lean Six Sigma White Belt certificate — AIGPE"
-              aria-label="Enlarge Lean Six Sigma White Belt certificate from AIGPE"
-              aria-haspopup="dialog"
-              aria-controls="image-viewer"
-              disabled
-            >
-              <img
-                src="six-sigma.jpg"
-                alt="Lean Six Sigma White Belt certificate from AIGPE"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="image-view-hint" aria-hidden="true">
-                View certificate ↗
-              </span>
-            </button>
+          <article class="recognition-ribbon" data-motion="slide-up">
+            <div class="ribbon-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 15a5 5 0 100-10 5 5 0 000 10z"></path>
+                <path d="M8.5 13.5L7 21l5-2.5L17 21l-1.5-7.5"></path>
+              </svg>
+            </div>
 
-            <div class="recognition-body">
-              <span class="tag">Certification</span>
+            <div class="ribbon-body">
+              <span class="ribbon-tag">Certification</span>
               <h3>Lean Six Sigma White Belt</h3>
               <p class="recognition-org">AIGPE</p>
               <p>
                 Completed Lean Six Sigma White Belt certification through AIGPE.
               </p>
+            </div>
+
+            <div class="ribbon-proof">
+              <button
+                type="button"
+                class="image-trigger ribbon-image-trigger"
+                data-lightbox
+                data-full="six-sigma.jpg"
+                data-caption="Lean Six Sigma White Belt certificate — AIGPE"
+                aria-label="View Lean Six Sigma White Belt certificate"
+                aria-haspopup="dialog"
+                aria-controls="image-viewer"
+                disabled
+              >
+                View certificate
+                <span aria-hidden="true">↗</span>
+              </button>
             </div>
           </article>
         </div>
