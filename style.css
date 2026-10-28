@@ -14,12 +14,13 @@
   --muted: #a7b2c4;
 
   --accent: #d9b36c;
-  --accent-soft: rgba(217, 179, 108, 0.16);
+  --accent-strong: #c9a257;
+  --accent-soft: rgba(217, 179, 108, 0.15);
   --accent-2: #7fa6c9;
-  --accent-2-soft: rgba(127, 166, 201, 0.14);
+  --accent-2-soft: rgba(127, 166, 201, 0.13);
 
   --border: rgba(237, 241, 247, 0.12);
-  --border-strong: rgba(217, 179, 108, 0.55);
+  --border-strong: rgba(217, 179, 108, 0.52);
 
   --font-heading: "Fraunces", Georgia, serif;
   --font: "Manrope", "Segoe UI", Arial, sans-serif;
@@ -47,12 +48,13 @@
     --muted: #5a6478;
 
     --accent: #9a6f2e;
-    --accent-soft: rgba(154, 111, 46, 0.12);
+    --accent-strong: #7d5a24;
+    --accent-soft: rgba(154, 111, 46, 0.11);
     --accent-2: #33547a;
-    --accent-2-soft: rgba(51, 84, 122, 0.10);
+    --accent-2-soft: rgba(51, 84, 122, 0.09);
 
     --border: rgba(24, 34, 48, 0.12);
-    --border-strong: rgba(154, 111, 46, 0.50);
+    --border-strong: rgba(154, 111, 46, 0.48);
 
     --shadow: 0 20px 55px rgba(24, 34, 48, 0.10);
     --shadow-soft: 0 12px 34px rgba(24, 34, 48, 0.07);
@@ -415,15 +417,11 @@ ul {
     background: var(--accent);
     color: #ffffff;
   }
-
-  .btn-outline {
-    color: var(--text);
-  }
 }
 
 
 /* =========================================================
-   4. Hero, full name, and achievement chips
+   4. Hero, full name, and achievement tiles
    ========================================================= */
 
 .hero {
@@ -450,7 +448,7 @@ ul {
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   align-items: center;
   gap: 36px;
-  min-height: 700px;
+  min-height: 720px;
 }
 
 .hero-text {
@@ -522,39 +520,133 @@ ul {
   margin-top: 30px;
 }
 
-.achievement-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-  margin-top: 26px;
+
+/* =========================================================
+   5. Interactive achievement tiles
+   ========================================================= */
+
+.achievement-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 28px;
   margin-bottom: 0;
   padding: 0;
   list-style: none;
 }
 
-.achievement-chips li {
+.achievement-tile {
+  min-width: 0;
+}
+
+.achievement-tile .achievement-trigger,
+.achievement-tile > .achievement-icon,
+.achievement-tile > .achievement-text {
+  display: none;
+}
+
+.achievement-tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 62px;
+  padding: 13px 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  box-shadow: var(--shadow-soft);
+}
+
+.achievement-icon {
   display: inline-flex;
   align-items: center;
-  min-height: 34px;
-  padding: 6px 13px;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
   border: 1px solid var(--border-strong);
-  border-radius: 999px;
+  border-radius: 10px;
   background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.achievement-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.achievement-text {
   color: var(--text);
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.35;
+}
+
+.achievement-tile-interactive {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.achievement-trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 62px;
+  padding: 13px 15px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform 220ms var(--ease-out),
+    border-color 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.achievement-trigger:disabled {
+  cursor: default;
+}
+
+.achievement-trigger .achievement-proof {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  color: var(--accent);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-.achievement-chips li::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  margin-right: 8px;
-  border-radius: 50%;
-  background: var(--accent);
+.achievement-trigger:disabled .achievement-proof {
+  display: none;
 }
+
+.achievement-trigger:focus-visible {
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .achievement-trigger:not(:disabled):hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    background: var(--card-hover);
+    box-shadow: var(--shadow);
+  }
+}
+
+
+/* =========================================================
+   6. Hero portrait
+   ========================================================= */
 
 .hero-portrait {
   position: relative;
@@ -564,7 +656,7 @@ ul {
   justify-content: center;
   isolation: isolate;
   min-width: 0;
-  height: 680px;
+  height: 700px;
   pointer-events: none;
 }
 
@@ -605,7 +697,7 @@ ul {
 
 
 /* =========================================================
-   5. About and circular profile photo
+   7. About and circular profile photo
    ========================================================= */
 
 .about-intro {
@@ -708,7 +800,7 @@ ul {
 
 
 /* =========================================================
-   6. Capabilities
+   8. Capabilities
    ========================================================= */
 
 .capabilities-grid {
@@ -775,7 +867,7 @@ ul {
 
 
 /* =========================================================
-   7. Interactive experience timeline
+   9. Interactive experience timeline
    ========================================================= */
 
 .experience-section {
@@ -966,7 +1058,7 @@ ul {
 
 
 /* =========================================================
-   8. Project filters and work examples
+   10. Project filters and work examples
    ========================================================= */
 
 .filter-bar {
@@ -1006,8 +1098,7 @@ ul {
   gap: 26px;
 }
 
-.project-card,
-.recognition-card {
+.project-card {
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--border);
@@ -1020,8 +1111,7 @@ ul {
     box-shadow 240ms ease;
 }
 
-.project-body,
-.recognition-body {
+.project-body {
   padding: 28px;
 }
 
@@ -1074,7 +1164,7 @@ ul {
 
 
 /* =========================================================
-   9. Shared image triggers
+   11. Shared image triggers
    ========================================================= */
 
 .image-trigger {
@@ -1086,8 +1176,8 @@ ul {
   overflow: hidden;
   border: 0;
   border-radius: 0;
-  background: #ffffff;
-  color: #ffffff;
+  background: transparent;
+  color: var(--text);
   text-align: left;
   cursor: zoom-in;
 }
@@ -1132,81 +1222,142 @@ ul {
   display: none;
 }
 
-.project-card:focus-within,
-.recognition-card:focus-within {
+.project-card:focus-within {
   border-color: var(--border-strong);
   box-shadow: var(--shadow);
 }
 
 
 /* =========================================================
-   10. Recognition and certificates
+   12. Recognition ribbons
    ========================================================= */
 
-.recognition-grid {
+.recognition-ribbons {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: stretch;
-  gap: 26px;
+  gap: 18px;
+  max-width: 1030px;
 }
 
-.recognition-card-wide {
-  grid-column: 1 / -1;
-}
-
-.bravo-images {
+.recognition-ribbon {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--border);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+  padding: 24px 26px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform 240ms var(--ease-out),
+    border-color 240ms ease,
+    box-shadow 240ms ease;
 }
 
-.bravo-images .recognition-image-trigger {
-  overflow: hidden;
+.ribbon-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
-.bravo-images .recognition-image-trigger img {
-  transition: transform 300ms var(--ease-out);
+.ribbon-icon svg {
+  width: 24px;
+  height: 24px;
 }
 
-.bravo-images .recognition-image-trigger:hover img,
-.bravo-images .recognition-image-trigger:focus-visible img {
-  transform: scale(1.05);
+.ribbon-body {
+  min-width: 0;
 }
 
-.recognition-image-trigger img {
-  width: 100%;
-  height: 280px;
-  padding: 14px;
-  object-fit: contain;
-  object-position: center;
-  background: #ffffff;
+.ribbon-tag {
+  display: inline-block;
+  margin-bottom: 9px;
+  padding: 4px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
 }
 
-.bravo-images .recognition-image-trigger img {
-  height: 310px;
-}
-
-.recognition-body h3 {
-  margin-bottom: 8px;
-  font-size: 1.18rem;
+.ribbon-body h3 {
+  margin-bottom: 6px;
+  font-size: 1.2rem;
 }
 
 .recognition-org {
-  margin-bottom: 14px;
-  color: var(--accent);
-  font-size: 0.85rem;
+  margin-bottom: 9px;
+  color: var(--accent-2);
+  font-size: 0.83rem;
   font-weight: 700;
 }
 
-.recognition-body > p:last-child {
+.ribbon-body > p:last-child {
   margin-bottom: 0;
-  font-size: 0.9rem;
+  font-size: 0.89rem;
+}
+
+.ribbon-proof {
+  flex-shrink: 0;
+}
+
+.ribbon-image-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.76rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform 200ms var(--ease-out),
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.ribbon-image-trigger:disabled {
+  cursor: default;
+}
+
+.ribbon-image-trigger:focus-visible {
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .recognition-ribbon:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow);
+  }
+
+  .ribbon-image-trigger:not(:disabled):hover {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--text);
+  }
 }
 
 
 /* =========================================================
-   11. Education
+   13. Education
    ========================================================= */
 
 .education-grid {
@@ -1291,7 +1442,7 @@ ul {
 
 
 /* =========================================================
-   12. Contact and footer
+   14. Contact and footer
    ========================================================= */
 
 .contact-section {
@@ -1365,7 +1516,7 @@ ul {
 
 
 /* =========================================================
-   13. Shared image viewer
+   15. Shared image viewer
    ========================================================= */
 
 .image-viewer {
@@ -1525,7 +1676,7 @@ ul {
 
 
 /* =========================================================
-   14. Motion system
+   16. Motion system
    Content is visible unless JavaScript explicitly arms it.
    ========================================================= */
 
@@ -1538,8 +1689,6 @@ ul {
 [data-stagger] > * {
   --motion-delay: 0ms;
 }
-
-/* Hero animation hooks */
 
 .hero-enter.is-pending,
 .hero-enter.is-entering {
@@ -1585,8 +1734,6 @@ ul {
   animation: portraitFadeIn 800ms ease both;
 }
 
-/* Headings: slide and underline, no fading */
-
 [data-motion="heading"].is-pending {
   transform: translateX(-20px);
 }
@@ -1603,8 +1750,6 @@ ul {
   animation: underlineDraw 520ms var(--ease-out) 120ms both;
 }
 
-/* Cards and supporting text: slide, no fading */
-
 [data-motion="slide-up"].is-pending,
 [data-motion="timeline"].is-pending {
   transform: translateY(28px);
@@ -1616,8 +1761,6 @@ ul {
   animation-delay: var(--motion-delay, 0ms);
 }
 
-/* Circular About portrait: fade only */
-
 [data-motion="portrait"].is-pending {
   opacity: 0;
 }
@@ -1625,8 +1768,6 @@ ul {
 [data-motion="portrait"].is-visible {
   animation: portraitFadeIn 720ms ease both;
 }
-
-/* Timeline segment draw */
 
 .timeline-item::before {
   content: "";
@@ -1716,7 +1857,7 @@ ul {
 
 
 /* =========================================================
-   15. Hover states for pointer devices
+   17. Hover states for pointer devices
    ========================================================= */
 
 @media (hover: hover) and (pointer: fine) {
@@ -1740,8 +1881,7 @@ ul {
     box-shadow: var(--shadow);
   }
 
-  .project-card:hover,
-  .recognition-card:hover {
+  .project-card:hover {
     transform: translateY(-5px);
     border-color: var(--border-strong);
     box-shadow: var(--shadow);
@@ -1789,7 +1929,7 @@ ul {
 
 
 /* =========================================================
-   16. Tablet and mobile layouts
+   18. Tablet and mobile layouts
    ========================================================= */
 
 @media (max-width: 1100px) {
@@ -1803,11 +1943,15 @@ ul {
 
   .hero-grid {
     gap: 22px;
-    min-height: 640px;
+    min-height: 660px;
   }
 
   .hero-portrait {
-    height: 620px;
+    height: 640px;
+  }
+
+  .achievement-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .about-intro {
@@ -1899,7 +2043,7 @@ ul {
   .hero-grid {
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
     gap: 14px;
-    min-height: 580px;
+    min-height: 600px;
   }
 
   .hero-text {
@@ -1923,7 +2067,7 @@ ul {
   }
 
   .hero-portrait {
-    height: 550px;
+    height: 570px;
   }
 
   .hero-actions {
@@ -1935,15 +2079,34 @@ ul {
     font-size: 0.8rem;
   }
 
-  .achievement-chips {
-    gap: 8px;
-    margin-top: 22px;
+  .achievement-tiles {
+    gap: 10px;
+    margin-top: 24px;
   }
 
-  .achievement-chips li {
-    min-height: 32px;
-    padding: 5px 11px;
-    font-size: 0.7rem;
+  .achievement-tile,
+  .achievement-trigger {
+    min-height: 58px;
+    padding: 12px 13px;
+    gap: 10px;
+  }
+
+  .achievement-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .achievement-icon svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .achievement-text {
+    font-size: 0.75rem;
+  }
+
+  .achievement-trigger .achievement-proof {
+    display: none;
   }
 
   .about-intro {
@@ -1960,6 +2123,16 @@ ul {
     gap: 20px;
   }
 
+  .recognition-ribbon {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .ribbon-proof {
+    grid-column: 2;
+    justify-self: start;
+  }
+
   .education-grid {
     grid-template-columns: 1fr;
     gap: 18px;
@@ -1973,21 +2146,8 @@ ul {
     margin-bottom: 18px;
   }
 
-  .project-body,
-  .recognition-body {
+  .project-body {
     padding: 24px;
-  }
-
-  .recognition-image-trigger img {
-    height: 240px;
-  }
-
-  .bravo-images .recognition-image-trigger img {
-    height: 260px;
-  }
-
-  .bravo-images {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .footer-inner {
@@ -2052,17 +2212,20 @@ ul {
     font-size: 0.84rem;
   }
 
-  .achievement-chips {
-    gap: 8px;
+  .achievement-tiles {
+    grid-template-columns: 1fr;
+    gap: 10px;
     margin-top: 24px;
   }
 
-  .achievement-chips li {
-    min-height: 34px;
-    padding: 6px 12px;
-    font-size: 0.72rem;
-    white-space: normal;
-    text-align: left;
+  .achievement-tile,
+  .achievement-trigger {
+    width: 100%;
+    min-height: 58px;
+  }
+
+  .achievement-text {
+    font-size: 0.8rem;
   }
 
   .hero-portrait {
@@ -2115,8 +2278,7 @@ ul {
   }
 
   .capabilities-grid,
-  .projects-grid,
-  .recognition-grid {
+  .projects-grid {
     grid-template-columns: 1fr;
   }
 
@@ -2124,8 +2286,29 @@ ul {
     padding: 26px;
   }
 
-  .recognition-card-wide {
-    grid-column: auto;
+  .recognition-ribbon {
+    padding: 22px 20px;
+    gap: 16px;
+  }
+
+  .ribbon-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .ribbon-icon svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .ribbon-proof {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+  }
+
+  .ribbon-image-trigger {
+    width: 100%;
+    justify-content: center;
   }
 
   .experience-timeline {
@@ -2178,15 +2361,6 @@ ul {
 
   .experience-list li {
     font-size: 0.87rem;
-  }
-
-  .bravo-images .recognition-image-trigger img {
-    height: 220px;
-    padding: 8px;
-  }
-
-  .recognition-image-trigger img {
-    height: 280px;
   }
 
   .contact-intro {
@@ -2257,9 +2431,13 @@ ul {
     width: 100%;
   }
 
-  .achievement-chips li {
-    width: 100%;
-    justify-content: flex-start;
+  .achievement-tile,
+  .achievement-trigger {
+    align-items: flex-start;
+  }
+
+  .achievement-icon {
+    margin-top: 2px;
   }
 
   .hero-location {
@@ -2275,18 +2453,12 @@ ul {
     font-size: 0.73rem;
   }
 
-  .project-body,
-  .recognition-body {
+  .project-body {
     padding: 22px;
   }
 
-  .bravo-images {
-    grid-template-columns: 1fr;
-  }
-
-  .bravo-images .recognition-image-trigger img {
-    height: 245px;
-    padding: 12px;
+  .recognition-ribbon {
+    padding: 20px 18px;
   }
 
   .domain-tag {
@@ -2296,7 +2468,7 @@ ul {
 
 
 /* =========================================================
-   17. Reduced motion
+   19. Reduced motion
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
@@ -2333,8 +2505,9 @@ ul {
   .btn:focus-visible,
   .capability-card:hover,
   .project-card:hover,
-  .recognition-card:hover,
-  .education-card:hover {
+  .education-card:hover,
+  .recognition-ribbon:hover,
+  .achievement-trigger:not(:disabled):hover {
     transform: none !important;
   }
 
@@ -2345,7 +2518,7 @@ ul {
 
 
 /* =========================================================
-   18. Print
+   20. Print
    ========================================================= */
 
 @media print {
@@ -2354,7 +2527,10 @@ ul {
     --text: #111111;
     --muted: #333333;
     --accent: #7a5a23;
+    --accent-strong: #7a5a23;
+    --accent-soft: transparent;
     --accent-2: #33547a;
+    --accent-2-soft: transparent;
     --border: #cccccc;
     --border-strong: #7a5a23;
     --shadow: none;
@@ -2380,7 +2556,8 @@ ul {
   .image-viewer,
   .back-to-top,
   .details-indicator,
-  .achievement-chips {
+  .achievement-tiles,
+  .ribbon-proof {
     display: none !important;
   }
 
@@ -2411,7 +2588,7 @@ ul {
 
   .capability-card,
   .project-card,
-  .recognition-card,
+  .recognition-ribbon,
   .education-card,
   .experience-details {
     background: #ffffff;
