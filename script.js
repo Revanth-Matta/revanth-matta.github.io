@@ -436,6 +436,18 @@
         "viewer-status"
       );
 
+      const prevButton = document.getElementById(
+        "viewer-prev"
+      );
+
+      const nextButton = document.getElementById(
+        "viewer-next"
+      );
+
+      const counter = document.getElementById(
+        "viewer-counter"
+      );
+
       const triggers = Array.from(
         document.querySelectorAll("[data-lightbox]")
       );
@@ -455,6 +467,8 @@
       let lastTrigger = null;
       let requestId = 0;
       let pageWasLocked = false;
+      let viewerImages = [];
+      let viewerIndex = 0;
 
       const supportsDialog =
         typeof viewer.showModal === "function";
@@ -491,54 +505,43 @@
         status.hidden = !message;
       }
 
-      function openViewer(trigger) {
-        const source = getSource(trigger);
+      function updateViewerControls() {
+        const hasMultipleImages = viewerImages.length > 1;
 
-        if (!source) {
+        if (prevButton) {
+          prevButton.hidden = !hasMultipleImages;
+        }
+
+        if (nextButton) {
+          nextButton.hidden = !hasMultipleImages;
+        }
+
+        if (counter) {
+          counter.hidden = !hasMultipleImages;
+
+          if (hasMultipleImages) {
+            counter.textContent =
+              `${viewerIndex + 1} / ${viewerImages.length}`;
+          }
+        }
+      }
+
+      function showViewerImage(index) {
+        if (!viewerImages.length) {
           return;
         }
 
-        if (!supportsDialog) {
-          window.open(
-            source,
-            "_blank",
-            "noopener,noreferrer"
-          );
+        viewerIndex =
+          (index + viewerImages.length) % viewerImages.length;
 
-          return;
-        }
-
-        const thumbnail = trigger.querySelector("img");
-
-        const description =
-          trigger.dataset.caption ||
-          thumbnail?.alt ||
-          "Portfolio image";
-
-        lastTrigger = trigger;
-
+        const source = viewerImages[viewerIndex];
         const activeRequest = ++requestId;
-
-        caption.textContent = description;
-        originalLink.href = source;
 
         image.hidden = true;
         image.removeAttribute("src");
-        image.alt = description;
-
         stage.setAttribute("aria-busy", "true");
         setStatus("Loading image…");
-
-        if (!viewer.open) {
-          pageWasLocked =
-            document.body.classList.contains("viewer-open");
-
-          viewer.showModal();
-
-          document.body.classList.add("viewer-open");
-        }
-
-        closeButton.focus({ preventScroll: true });
+        updateViewerControls();
 
         const loader = new Image();
 
@@ -552,7 +555,7 @@
 
           image.src = source;
           image.hidden = false;
-
+          originalLink.href = source;
           stage.setAttribute("aria-busy", "false");
           setStatus("");
         };
@@ -577,6 +580,104 @@
         loader.src = source;
       }
 
+      function openViewer(trigger) {
+        const source = getSource(trigger);
+
+        if (!source) {
+          return;
+        }
+
+        if (!supportsDialog) {
+          window.open(
+            source,
+            "_blank",
+            "noopener,noreferrer"
+          );
+
+          return;
+        }
+
+        const thumbnail = trigger.querySelector("img");
+
+        const description =
+          trigger.dataset.caption ||
+          thumbnail?.alt ||
+          "Portfolio image";
+
+        const imageList = (
+          trigger.dataset.images ||
+          source
+        )
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean);
+
+        lastTrigger = trigger;
+        viewerImages = imageList;
+        viewerIndex = 0;
+
+        const activeRequest = ++requestId;
+
+        caption.textContent = description;
+        originalLink.href = imageList[0];
+
+        image.hidden = true;
+        image.removeAttribute("src");
+        image.alt = description;
+
+        stage.setAttribute("aria-busy", "true");
+        setStatus("Loading image…");
+
+        if (!viewer.open) {
+          pageWasLocked =
+            document.body.classList.contains("viewer-open");
+
+          viewer.showModal();
+
+          document.body.classList.add("viewer-open");
+        }
+
+        closeButton.focus({ preventScroll: true });
+
+        updateViewerControls();
+
+        const loader = new Image();
+
+        loader.onload = () => {
+          if (
+            activeRequest !== requestId ||
+            !viewer.open
+          ) {
+            return;
+          }
+
+          image.src = imageList[0];
+          image.hidden = false;
+
+          stage.setAttribute("aria-busy", "false");
+          setStatus("");
+        };
+
+        loader.onerror = () => {
+          if (
+            activeRequest !== requestId ||
+            !viewer.open
+          ) {
+            return;
+          }
+
+          stage.setAttribute("aria-busy", "false");
+          image.hidden = true;
+
+          setStatus(
+            "This image could not be loaded. " +
+            "You can try opening the original image below."
+          );
+        };
+
+        loader.src = imageList[0];
+      }
+
       function closeViewer() {
         if (viewer.open) {
           viewer.close();
@@ -599,6 +700,10 @@
 
         stage.setAttribute("aria-busy", "false");
         setStatus("");
+
+        viewerImages = [];
+        viewerIndex = 0;
+        updateViewerControls();
 
         if (lastTrigger?.isConnected) {
           lastTrigger.focus({ preventScroll: true });
@@ -632,6 +737,18 @@
         });
 
       closeButton.addEventListener("click", closeViewer);
+
+      if (prevButton) {
+        prevButton.addEventListener("click", () => {
+          showViewerImage(viewerIndex - 1);
+        });
+      }
+
+      if (nextButton) {
+        nextButton.addEventListener("click", () => {
+          showViewerImage(viewerIndex + 1);
+        });
+      }
 
       let backdropPointerDown = false;
 
@@ -667,6 +784,26 @@
       viewer.addEventListener("close", resetViewer);
 
       viewer.addEventListener("keydown", (event) => {
+        if (
+          viewer.open &&
+          viewerImages.length > 1 &&
+          event.key === "ArrowLeft"
+        ) {
+          event.preventDefault();
+          showViewerImage(viewerIndex - 1);
+          return;
+        }
+
+        if (
+          viewer.open &&
+          viewerImages.length > 1 &&
+          event.key === "ArrowRight"
+        ) {
+          event.preventDefault();
+          showViewerImage(viewerIndex + 1);
+          return;
+        }
+
         if (event.key !== "Tab" || !viewer.open) {
           return;
         }
