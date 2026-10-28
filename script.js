@@ -619,6 +619,18 @@
         });
       });
 
+      document
+        .querySelectorAll(".achievement-tile-interactive")
+        .forEach((tile) => {
+          const trigger = tile.querySelector(
+            ".achievement-trigger[data-lightbox]"
+          );
+
+          if (trigger && getSource(trigger)) {
+            trigger.disabled = false;
+          }
+        });
+
       closeButton.addEventListener("click", closeViewer);
 
       let backdropPointerDown = false;
