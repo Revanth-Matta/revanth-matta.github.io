@@ -2,1058 +2,798 @@
   "use strict";
 
   function initializePortfolio() {
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    );
-
+    initializeTheme();
     initializeYear();
     initializeNavigation();
-    initializeProjectFilters();
-    initializeExperience();
+    initializeBackToTop();
+    initializeCapabilityTabs();
+    initializeImpactDisclosure();
+    initializeExperienceScrolls();
     initializeImageViewer();
-    initializeAnimations();
 
-    /* =====================================================
-       1. Footer year
-       ===================================================== */
+    /* ===================================
+       1. Theme
+       =================================== */
 
-    function initializeYear() {
-      const year = document.getElementById("current-year");
+    function initializeTheme() {
+      const themeToggle = document.querySelector(".theme-toggle");
+      const root = document.documentElement;
 
-      if (year) {
-        year.textContent = new Date().getFullYear();
-      }
-    }
-
-    /* =====================================================
-       2. Mobile navigation and active-section indicator
-       ===================================================== */
-
-    function initializeNavigation() {
-      const navbar = document.querySelector(".navbar");
-      const toggle = document.querySelector(".nav-toggle");
-
-      const navigation = document.getElementById(
-        "primary-navigation"
-      );
-
-      if (!navbar || !toggle || !navigation) {
+      if (!themeToggle) {
         return;
       }
 
-      const links = Array.from(
-        navigation.querySelectorAll('a[href^="#"]')
-      );
+      const storedTheme = localStorage.getItem("portfolio-theme");
 
-      const mobileViewport = window.matchMedia(
-        "(max-width: 900px)"
-      );
-
-      function setMenu(open, restoreFocus = false) {
-        toggle.setAttribute("aria-expanded", String(open));
-
-        toggle.setAttribute(
-          "aria-label",
-          open ? "Close navigation menu" : "Open navigation menu"
-        );
-
-        navigation.classList.toggle("is-open", open);
-
-        if (restoreFocus) {
-          toggle.focus();
-        }
+      if (storedTheme === "light" || storedTheme === "dark") {
+        root.setAttribute("data-theme", storedTheme);
+      } else if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: light)").matches
+      ) {
+        root.setAttribute("data-theme", "light");
+      } else {
+        root.setAttribute("data-theme", "dark");
       }
 
-      toggle.addEventListener("click", () => {
-        const isOpen =
-          toggle.getAttribute("aria-expanded") === "true";
+      updateThemeToggle();
 
-        setMenu(!isOpen);
+      themeToggle.addEventListener("click", () => {
+        const currentTheme =
+          root.getAttribute("data-theme") === "light" ? "light" : "dark";
+        const nextTheme = currentTheme === "light" ? "dark" : "light";
+
+        root.setAttribute("data-theme", nextTheme);
+        localStorage.setItem("portfolio-theme", nextTheme);
+
+        updateThemeToggle();
       });
 
-      links.forEach((link) => {
-        link.addEventListener("click", () => {
-          setMenu(false);
-        });
-      });
+      function updateThemeToggle() {
+        const currentTheme = root.getAttribute("data-theme");
+        const isLight = currentTheme === "light";
 
-      document.addEventListener("click", (event) => {
-        if (
-          mobileViewport.matches &&
-          !navbar.contains(event.target)
-        ) {
-          setMenu(false);
+        themeToggle.setAttribute(
+          "aria-label",
+          isLight
+            ? "Current mode: Light. Switch to dark mode."
+            : "Current mode: Dark. Switch to light mode."
+        );
+
+        const themeLabel = themeToggle.querySelector(".theme-label");
+
+        if (themeLabel) {
+          themeLabel.textContent = isLight ? "Light" : "Dark";
         }
+      }
+    }
+
+    /* ===================================
+       2. Year
+       =================================== */
+
+    function initializeYear() {
+      const yearElement = document.getElementById("current-year");
+
+      if (!yearElement) {
+        return;
+      }
+
+      yearElement.textContent = String(new Date().getFullYear());
+    }
+
+    /* ===================================
+       3. Navigation
+       =================================== */
+
+    function initializeNavigation() {
+      const navToggle = document.querySelector(".nav-toggle");
+      const navLinks = document.getElementById("primary-navigation");
+      const navLinkElements = Array.from(
+        document.querySelectorAll(".nav-links a")
+      );
+
+      if (!navToggle || !navLinks) {
+        return;
+      }
+
+      navToggle.addEventListener("click", () => {
+        const isOpen = navToggle.getAttribute("aria-expanded") === "true";
+
+        navToggle.setAttribute("aria-expanded", String(!isOpen));
+        navLinks.classList.toggle("nav-open", !isOpen);
+
+        navToggle.setAttribute(
+          "aria-label",
+          isOpen ? "Open navigation menu" : "Close navigation menu"
+        );
+      });
+
+      navLinkElements.forEach((link) => {
+        link.addEventListener("click", () => {
+          navToggle.setAttribute("aria-expanded", "false");
+          navLinks.classList.remove("nav-open");
+          navToggle.setAttribute("aria-label", "Open navigation menu");
+        });
       });
 
       document.addEventListener("keydown", (event) => {
         if (
           event.key === "Escape" &&
-          toggle.getAttribute("aria-expanded") === "true"
+          navToggle.getAttribute("aria-expanded") === "true"
         ) {
-          setMenu(false, true);
+          navToggle.setAttribute("aria-expanded", "false");
+          navLinks.classList.remove("nav-open");
+          navToggle.setAttribute("aria-label", "Open navigation menu");
+          navToggle.focus();
         }
       });
 
-      navbar.addEventListener("focusout", () => {
-        window.setTimeout(() => {
-          if (
-            mobileViewport.matches &&
-            !navbar.contains(document.activeElement)
-          ) {
-            setMenu(false);
-          }
-        }, 0);
-      });
+      const sections = Array.from(
+        document.querySelectorAll("main section[id]")
+      );
 
-      mobileViewport.addEventListener("change", () => {
-        setMenu(false);
-      });
+      function updateActiveLink() {
+        const scrollPosition = window.scrollY + 140;
 
-      toggle.hidden = false;
-      navbar.classList.add("nav-ready");
-
-      const sections = links
-        .map((link) => {
-          const id = link.getAttribute("href").slice(1);
-
-          return document.getElementById(id);
-        })
-        .filter(Boolean);
-
-      let scrollQueued = false;
-
-      function updateActiveSection() {
-        const marker =
-          navbar.getBoundingClientRect().height + 100;
-
-        let activeId = "";
+        let currentSectionId = "";
 
         sections.forEach((section) => {
-          if (section.getBoundingClientRect().top <= marker) {
-            activeId = section.id;
+          if (scrollPosition >= section.offsetTop) {
+            currentSectionId = section.id;
           }
         });
 
-        const nearBottom =
-          window.innerHeight + window.scrollY >=
-          document.documentElement.scrollHeight - 8;
+        navLinkElements.forEach((link) => {
+          const linkHref = link.getAttribute("href");
 
-        if (nearBottom && sections.length) {
-          activeId = sections[sections.length - 1].id;
-        }
-
-        links.forEach((link) => {
-          const active =
-            link.getAttribute("href") === `#${activeId}`;
-
-          link.classList.toggle("active", active);
-
-          if (active) {
+          if (
+            linkHref &&
+            linkHref.startsWith("#") &&
+            linkHref.slice(1) === currentSectionId
+          ) {
+            link.classList.add("active");
             link.setAttribute("aria-current", "location");
           } else {
+            link.classList.remove("active");
             link.removeAttribute("aria-current");
           }
         });
-
-        scrollQueued = false;
       }
 
-      function queueActiveSectionUpdate() {
-        if (scrollQueued) {
-          return;
-        }
+      window.addEventListener("scroll", updateActiveLink, {
+        passive: true
+      });
 
-        scrollQueued = true;
-
-        window.requestAnimationFrame(updateActiveSection);
-      }
-
-      window.addEventListener(
-        "scroll",
-        queueActiveSectionUpdate,
-        { passive: true }
-      );
-
-      window.addEventListener(
-        "resize",
-        queueActiveSectionUpdate
-      );
-
-      updateActiveSection();
+      updateActiveLink();
     }
 
-    /* =====================================================
-       3. Project filters
-       ===================================================== */
+    /* ===================================
+       4. Back to top
+       =================================== */
 
-    function initializeProjectFilters() {
-      const filterBar = document.querySelector(".filter-bar");
+    function initializeBackToTop() {
+      const backToTop = document.querySelector(".back-to-top");
 
-      const buttons = Array.from(
-        document.querySelectorAll(".filter-btn")
-      );
-
-      const cards = Array.from(
-        document.querySelectorAll(
-          ".projects-grid .project-card"
-        )
-      );
-
-      const status = document.getElementById(
-        "project-filter-status"
-      );
-
-      if (!filterBar || !buttons.length || !cards.length) {
+      if (!backToTop) {
         return;
       }
 
-      let filterAnimations = [];
+      function updateBackToTop() {
+        const shouldShow = window.scrollY > 420;
 
-      function applyFilter(button) {
-        const filter = button.dataset.filter || "all";
+        backToTop.classList.toggle("visible", shouldShow);
+      }
 
-        filterAnimations.forEach((animation) => {
-          animation.cancel();
+      backToTop.addEventListener("click", () => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      });
+
+      window.addEventListener("scroll", updateBackToTop, {
+        passive: true
+      });
+
+      updateBackToTop();
+    }
+
+    /* ===================================
+       5. Capability tabs
+       =================================== */
+
+    function initializeCapabilityTabs() {
+      const tabs = Array.from(
+        document.querySelectorAll(".capability-tab")
+      );
+
+      const panels = Array.from(
+        document.querySelectorAll(".capability-card")
+      );
+
+      const overview = document.getElementById("capability-overview");
+
+      if (!tabs.length || !panels.length || !overview) {
+        return;
+      }
+
+      let activeTab = null;
+
+      function closeAllPanels() {
+        panels.forEach((panel) => {
+          panel.hidden = true;
         });
 
-        filterAnimations = [];
-
-        buttons.forEach((item) => {
-          const active = item === button;
-
-          item.classList.toggle("active", active);
-          item.setAttribute("aria-pressed", String(active));
+        tabs.forEach((tab) => {
+          tab.setAttribute("aria-selected", "false");
         });
 
-        let visibleCount = 0;
+        overview.hidden = false;
+        activeTab = null;
+      }
 
-        cards.forEach((card) => {
-          const categories = (
-            card.dataset.category || ""
-          ).split(/\s+/);
+      function openPanel(targetPanel) {
+        panels.forEach((panel) => {
+          panel.hidden = panel !== targetPanel;
+        });
 
-          const show =
-            filter === "all" || categories.includes(filter);
+        tabs.forEach((tab) => {
+          const isTarget =
+            tab.dataset.capabilityTarget === targetPanel.id;
 
-          card.hidden = !show;
+          tab.setAttribute("aria-selected", String(isTarget));
+        });
 
-          if (!show) {
+        overview.hidden = true;
+        activeTab = targetPanel;
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const targetPanel = document.getElementById(
+            tab.dataset.capabilityTarget
+          );
+
+          if (!targetPanel) {
             return;
           }
 
-          visibleCount += 1;
-
-          card.classList.remove("is-pending");
-          card.classList.add("is-visible");
-
-          if (!reducedMotion.matches && card.animate) {
-            const animation = card.animate(
-              [
-                { transform: "translateY(14px)" },
-                { transform: "translateY(0)" }
-              ],
-              {
-                duration: 300,
-                delay: (visibleCount - 1) * 55,
-                easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-                fill: "backwards"
-              }
-            );
-
-            filterAnimations.push(animation);
+          if (activeTab === targetPanel) {
+            closeAllPanels();
+            return;
           }
+
+          openPanel(targetPanel);
         });
+      });
 
-        if (status) {
-          const label = button.textContent.trim();
+      document.addEventListener("keydown", (event) => {
+        if (
+          event.key === "Escape" &&
+          activeTab &&
+          !document.querySelector("dialog[open]")
+        ) {
+          closeAllPanels();
+        }
+      });
+    }
 
-          const noun =
-            visibleCount === 1 ? "example" : "examples";
+    /* ===================================
+       6. Impact disclosure
+       =================================== */
 
-          status.textContent =
-            `${visibleCount} work ${noun} shown. ` +
-            `Filter: ${label}.`;
+    function initializeImpactDisclosure() {
+      const toggles = Array.from(
+        document.querySelectorAll(".impact-toggle")
+      );
+
+      const panels = Array.from(
+        document.querySelectorAll(".impact-panel")
+      );
+
+      if (!toggles.length || !panels.length) {
+        return;
+      }
+
+      let activePanel = null;
+
+      function closePanel(panel) {
+        panel.hidden = true;
+
+        const toggle = document.querySelector(
+          `.impact-toggle[data-impact-target="${panel.id}"]`
+        );
+
+        if (toggle) {
+          toggle.setAttribute("aria-expanded", "false");
         }
       }
 
-      buttons.forEach((button) => {
-        button.addEventListener("click", () => {
-          applyFilter(button);
+      function openPanel(panel) {
+        panels.forEach((item) => {
+          if (item !== panel) {
+            closePanel(item);
+          }
         });
-      });
 
-      filterBar.hidden = false;
-    }
+        panel.hidden = false;
 
-    /* =====================================================
-       4. Expandable experience timeline
-       ===================================================== */
-
-    function initializeExperience() {
-      const entries = document.querySelectorAll(
-        ".experience-details"
-      );
-
-      entries.forEach((details) => {
-        const summary = details.querySelector(
-          ".experience-summary"
+        const toggle = document.querySelector(
+          `.impact-toggle[data-impact-target="${panel.id}"]`
         );
 
-        if (!summary) {
-          return;
+        if (toggle) {
+          toggle.setAttribute("aria-expanded", "true");
         }
 
-        let currentAnimation = null;
-        let desiredOpen = details.open;
+        activePanel = panel;
+      }
 
-        function clearSizing() {
-          details.style.height = "";
-          details.style.overflow = "";
-        }
+      toggles.forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+          const targetPanel = document.getElementById(
+            toggle.dataset.impactTarget
+          );
 
-        function completeImmediately(open) {
-          if (currentAnimation) {
-            currentAnimation.cancel();
-            currentAnimation = null;
-          }
-
-          details.open = open;
-          desiredOpen = open;
-
-          clearSizing();
-        }
-
-        summary.addEventListener("click", (event) => {
-          if (
-            reducedMotion.matches ||
-            typeof details.animate !== "function"
-          ) {
+          if (!targetPanel) {
             return;
           }
 
-          event.preventDefault();
-
-          const startHeight =
-            details.getBoundingClientRect().height;
-
-          desiredOpen = !desiredOpen;
-
-          if (currentAnimation) {
-            currentAnimation.cancel();
-            currentAnimation = null;
+          if (activePanel === targetPanel) {
+            closePanel(targetPanel);
+            activePanel = null;
+            return;
           }
 
-          clearSizing();
-
-          let endHeight;
-
-          if (desiredOpen) {
-            details.open = true;
-
-            endHeight =
-              details.getBoundingClientRect().height;
-          } else {
-            details.open = false;
-
-            endHeight =
-              details.getBoundingClientRect().height;
-
-            details.open = true;
-          }
-
-          details.style.height = `${startHeight}px`;
-          details.style.overflow = "hidden";
-
-          const animation = details.animate(
-            [
-              { height: `${startHeight}px` },
-              { height: `${endHeight}px` }
-            ],
-            {
-              duration: 320,
-              easing: "cubic-bezier(0.22, 1, 0.36, 1)"
-            }
-          );
-
-          currentAnimation = animation;
-
-          animation.onfinish = () => {
-            if (currentAnimation !== animation) {
-              return;
-            }
-
-            details.open = desiredOpen;
-            currentAnimation = null;
-
-            clearSizing();
-          };
+          openPanel(targetPanel);
         });
+      });
 
-        details.addEventListener("toggle", () => {
-          if (!currentAnimation) {
-            desiredOpen = details.open;
-          }
-        });
-
-        window.addEventListener("resize", () => {
-          if (currentAnimation) {
-            completeImmediately(desiredOpen);
-          }
-        });
-
-        reducedMotion.addEventListener("change", () => {
-          if (reducedMotion.matches && currentAnimation) {
-            completeImmediately(desiredOpen);
-          }
-        });
+      document.addEventListener("keydown", (event) => {
+        if (
+          event.key === "Escape" &&
+          activePanel &&
+          !document.querySelector("dialog[open]")
+        ) {
+          closePanel(activePanel);
+          activePanel = null;
+        }
       });
     }
 
-    /* =====================================================
-       5. Project and recognition image viewer
-       ===================================================== */
+    /* ===================================
+       7. Experience scrolls and comparison
+       =================================== */
 
-    function initializeImageViewer() {
-      const viewer = document.getElementById("image-viewer");
-      const image = document.getElementById("viewer-image");
-
-      const caption = document.getElementById(
-        "viewer-caption"
+    function initializeExperienceScrolls() {
+      const scrolls = Array.from(
+        document.querySelectorAll(".experience-scroll")
       );
 
-      const closeButton = document.getElementById(
-        "viewer-close"
-      );
-
-      const originalLink = document.getElementById(
-        "viewer-original"
-      );
-
-      const stage = document.getElementById("viewer-stage");
-
-      const status = document.getElementById(
-        "viewer-status"
-      );
-
-      const prevButton = document.getElementById(
-        "viewer-prev"
-      );
-
-      const nextButton = document.getElementById(
-        "viewer-next"
-      );
-
-      const counter = document.getElementById(
-        "viewer-counter"
-      );
-
-      const triggers = Array.from(
-        document.querySelectorAll("[data-lightbox]")
-      );
+      const compareToggle = document.getElementById("compare-toggle");
+      const comparePanel = document.getElementById("compare-panel");
+      const compareTrack = document.getElementById("compare-track");
+      const compareStatus = document.getElementById("compare-status");
+      const compareClose = document.querySelector(".compare-close");
 
       if (
-        !viewer ||
-        !image ||
-        !caption ||
-        !closeButton ||
-        !originalLink ||
-        !stage ||
-        !status
+        !scrolls.length ||
+        !compareToggle ||
+        !comparePanel ||
+        !compareTrack ||
+        !compareStatus ||
+        !compareClose
       ) {
         return;
       }
 
-      let lastTrigger = null;
-      let requestId = 0;
-      let pageWasLocked = false;
-      let viewerImages = [];
-      let viewerIndex = 0;
+      const selected = new Set();
+      let compareOpen = false;
 
-      const supportsDialog =
-        typeof viewer.showModal === "function";
-
-      function getSource(trigger) {
-        const thumbnail = trigger.querySelector("img");
-
-        const source =
-          trigger.dataset.full ||
-          thumbnail?.getAttribute("src");
-
-        if (!source) {
-          return null;
-        }
-
-        try {
-          const url = new URL(source, document.baseURI);
-
-          if (
-            url.protocol !== "https:" &&
-            url.protocol !== "http:"
-          ) {
-            return null;
-          }
-
-          return url.href;
-        } catch {
-          return null;
-        }
+      function getScrollById(id) {
+        return (
+          scrolls.find(
+            (scroll) => scroll.dataset.experienceId === id
+          ) || null
+        );
       }
 
-      function setStatus(message) {
-        status.textContent = message;
-        status.hidden = !message;
-      }
+      function closeScroll(scroll) {
+        const toggle = scroll.querySelector(".scroll-toggle");
+        const wrapper = scroll.querySelector(".scroll-content-wrapper");
 
-      function updateViewerControls() {
-        const hasMultipleImages = viewerImages.length > 1;
-
-        if (prevButton) {
-          prevButton.hidden = !hasMultipleImages;
-        }
-
-        if (nextButton) {
-          nextButton.hidden = !hasMultipleImages;
-        }
-
-        if (counter) {
-          counter.hidden = !hasMultipleImages;
-
-          if (hasMultipleImages) {
-            counter.textContent =
-              `${viewerIndex + 1} / ${viewerImages.length}`;
-          }
-        }
-      }
-
-      function showViewerImage(index) {
-        if (!viewerImages.length) {
+        if (!toggle || !wrapper) {
           return;
         }
 
-        viewerIndex =
-          (index + viewerImages.length) % viewerImages.length;
+        toggle.setAttribute("aria-expanded", "false");
+        wrapper.classList.remove("open");
+        scroll.classList.remove("open");
+      }
 
-        const source = viewerImages[viewerIndex];
-        const activeRequest = ++requestId;
+      function updateCompareControl() {
+        const count = selected.size;
+        const countLabel = compareToggle.querySelector(".compare-count");
 
-        image.hidden = true;
-        image.removeAttribute("src");
-        stage.setAttribute("aria-busy", "true");
-        setStatus("Loading image…");
-        updateViewerControls();
+        compareToggle.disabled = count < 2;
 
-        const loader = new Image();
+        if (countLabel) {
+          countLabel.textContent = count > 0 ? `(${count})` : "";
+        }
 
-        loader.onload = () => {
-          if (
-            activeRequest !== requestId ||
-            !viewer.open
-          ) {
+        if (count === 0) {
+          compareStatus.textContent = "";
+        } else if (count === 1) {
+          compareStatus.textContent =
+            "1 role selected. Select at least two roles to compare.";
+        } else {
+          compareStatus.textContent = `${count} roles selected.`;
+        }
+      }
+
+      function buildCompareCard(scroll) {
+        const id = scroll.dataset.experienceId;
+        const content = scroll.querySelector(".scroll-content");
+
+        if (!id || !content) {
+          return null;
+        }
+
+        const card = document.createElement("article");
+        card.className = "compare-card";
+        card.dataset.compareFor = id;
+
+        const header = document.createElement("header");
+        header.className = "compare-card-header";
+        header.setAttribute("aria-hidden", "true");
+
+        const company = scroll.querySelector(".experience-company");
+        const role = scroll.querySelector(".experience-role");
+        const date = scroll.querySelector(".experience-date");
+
+        const companyText = document.createElement("span");
+        companyText.className = "compare-company";
+        companyText.textContent = company ? company.textContent : "";
+
+        const roleText = document.createElement("span");
+        roleText.className = "compare-role";
+        roleText.textContent = role ? role.textContent : "";
+
+        const dateText = document.createElement("span");
+        dateText.className = "compare-date";
+        dateText.textContent = date ? date.textContent : "";
+
+        header.append(companyText, roleText, dateText);
+        card.appendChild(header);
+
+        content.style.visibility = "visible";
+        card.appendChild(content);
+
+        return card;
+      }
+
+      function returnContentToScroll(card) {
+        const content = card.querySelector(".scroll-content");
+        const scroll = getScrollById(card.dataset.compareFor);
+
+        if (content && scroll) {
+          const wrapper = scroll.querySelector(".scroll-content-wrapper");
+
+          if (wrapper) {
+            wrapper.appendChild(content);
+          }
+
+          content.style.visibility = "";
+        }
+
+        card.remove();
+      }
+
+      function clearComparison() {
+        Array.from(
+          compareTrack.querySelectorAll(".compare-card")
+        ).forEach(returnContentToScroll);
+      }
+
+      function openComparison() {
+        if (selected.size < 2) {
+          return;
+        }
+
+        scrolls.forEach(closeScroll);
+        clearComparison();
+
+        selected.forEach((id) => {
+          const scroll = getScrollById(id);
+
+          if (!scroll) {
             return;
           }
 
-          image.src = source;
-          image.hidden = false;
-          originalLink.href = source;
-          stage.setAttribute("aria-busy", "false");
-          setStatus("");
-        };
+          const card = buildCompareCard(scroll);
 
-        loader.onerror = () => {
+          if (card) {
+            compareTrack.appendChild(card);
+          }
+        });
+
+        comparePanel.hidden = false;
+        compareToggle.setAttribute("aria-expanded", "true");
+        compareOpen = true;
+
+        compareStatus.textContent = `Comparing ${selected.size} roles. Use the comparison panel to review each role.`;
+
+        compareClose.focus({ preventScroll: true });
+      }
+
+      function closeComparison() {
+        if (!compareOpen) {
+          return;
+        }
+
+        clearComparison();
+
+        comparePanel.hidden = true;
+        compareToggle.setAttribute("aria-expanded", "false");
+        compareOpen = false;
+
+        updateCompareControl();
+        compareToggle.focus({ preventScroll: true });
+      }
+
+      compareToggle.addEventListener("click", () => {
+        if (compareOpen) {
+          closeComparison();
+        } else {
+          openComparison();
+        }
+      });
+
+      compareClose.addEventListener("click", closeComparison);
+
+      document.addEventListener("keydown", (event) => {
+        if (
+          event.key === "Escape" &&
+          compareOpen &&
+          !document.querySelector("dialog[open]")
+        ) {
+          closeComparison();
+        }
+      });
+
+      scrolls.forEach((scroll) => {
+        const toggle = scroll.querySelector(".scroll-toggle");
+        const wrapper = scroll.querySelector(".scroll-content-wrapper");
+        const checkbox = scroll.querySelector(".compare-checkbox");
+
+        if (!toggle || !wrapper || !checkbox) {
+          return;
+        }
+
+        toggle.addEventListener("click", () => {
+          const isOpen =
+            toggle.getAttribute("aria-expanded") === "true";
+
+          toggle.setAttribute("aria-expanded", String(!isOpen));
+          wrapper.classList.toggle("open", !isOpen);
+          scroll.classList.toggle("open", !isOpen);
+        });
+
+        toggle.addEventListener("keydown", (event) => {
           if (
-            activeRequest !== requestId ||
-            !viewer.open
+            event.key === "Escape" &&
+            toggle.getAttribute("aria-expanded") === "true"
           ) {
-            return;
+            event.preventDefault();
+            toggle.setAttribute("aria-expanded", "false");
+            wrapper.classList.remove("open");
+            scroll.classList.remove("open");
+          }
+        });
+
+        checkbox.addEventListener("change", () => {
+          const id = scroll.dataset.experienceId;
+
+          if (checkbox.checked) {
+            selected.add(id);
+
+            if (compareOpen) {
+              closeScroll(scroll);
+
+              const card = buildCompareCard(scroll);
+
+              if (card) {
+                compareTrack.appendChild(card);
+              }
+
+              compareStatus.textContent = `Comparing ${selected.size} roles.`;
+            }
+          } else {
+            selected.delete(id);
+
+            if (compareOpen) {
+              const card = compareTrack.querySelector(
+                `.compare-card[data-compare-for="${id}"]`
+              );
+
+              if (card) {
+                returnContentToScroll(card);
+              }
+
+              if (selected.size < 2) {
+                closeComparison();
+              } else {
+                compareStatus.textContent = `Comparing ${selected.size} roles.`;
+              }
+            }
           }
 
-          stage.setAttribute("aria-busy", "false");
-          image.hidden = true;
+          updateCompareControl();
+        });
+      });
 
-          setStatus(
-            "This image could not be loaded. " +
-            "You can try opening the original image below."
-          );
-        };
+      updateCompareControl();
+    }
 
-        loader.src = source;
+    /* ===================================
+       8. Image viewer
+       =================================== */
+
+    function initializeImageViewer() {
+      const viewer = document.getElementById("image-viewer");
+      const triggers = Array.from(
+        document.querySelectorAll("[data-lightbox]")
+      );
+
+      if (!viewer || !triggers.length) {
+        return;
+      }
+
+      const viewerImage = document.getElementById("viewer-image");
+      const viewerCaption = document.getElementById("viewer-caption");
+      const viewerCounter = document.getElementById("viewer-counter");
+      const viewerStatus = document.getElementById("viewer-status");
+      const viewerOriginal = document.getElementById("viewer-original");
+      const viewerPrev = document.getElementById("viewer-prev");
+      const viewerNext = document.getElementById("viewer-next");
+      const viewerClose = document.getElementById("viewer-close");
+      const viewerStage = document.getElementById("viewer-stage");
+
+      if (
+        !viewerImage ||
+        !viewerCaption ||
+        !viewerCounter ||
+        !viewerStatus ||
+        !viewerOriginal ||
+        !viewerPrev ||
+        !viewerNext ||
+        !viewerClose ||
+        !viewerStage
+      ) {
+        return;
+      }
+
+      let currentImages = [];
+      let currentIndex = 0;
+      let lastFocusedElement = null;
+
+      function updateViewer() {
+        const currentImage = currentImages[currentIndex];
+
+        if (!currentImage) {
+          return;
+        }
+
+        viewerImage.src = currentImage;
+        viewerImage.alt = viewerCaption.textContent || "Portfolio image";
+
+        viewerCounter.textContent = `Image ${
+          currentIndex + 1
+        } of ${currentImages.length}`;
+        viewerCounter.hidden = currentImages.length <= 1;
+
+        viewerStatus.textContent = `Image ${
+          currentIndex + 1
+        } of ${currentImages.length}`;
+        viewerStatus.hidden = false;
+
+        viewerOriginal.href = currentImage;
+
+        const hasMultipleImages = currentImages.length > 1;
+
+        viewerPrev.hidden = !hasMultipleImages;
+        viewerNext.hidden = !hasMultipleImages;
       }
 
       function openViewer(trigger) {
-        const source = getSource(trigger);
-
-        if (!source) {
-          return;
-        }
-
-        if (!supportsDialog) {
-          window.open(
-            source,
-            "_blank",
-            "noopener,noreferrer"
-          );
-
-          return;
-        }
-
-        const thumbnail = trigger.querySelector("img");
-
-        const description =
-          trigger.dataset.caption ||
-          thumbnail?.alt ||
-          "Portfolio image";
-
-        const imageList = (
-          trigger.dataset.images ||
-          source
-        )
+        const images = (trigger.dataset.images || "")
           .split(",")
-          .map((item) => item.trim())
+          .map((image) => image.trim())
           .filter(Boolean);
 
-        lastTrigger = trigger;
-        viewerImages = imageList;
-        viewerIndex = 0;
-
-        const activeRequest = ++requestId;
-
-        caption.textContent = description;
-        originalLink.href = imageList[0];
-
-        image.hidden = true;
-        image.removeAttribute("src");
-        image.alt = description;
-
-        stage.setAttribute("aria-busy", "true");
-        setStatus("Loading image…");
-
-        if (!viewer.open) {
-          pageWasLocked =
-            document.body.classList.contains("viewer-open");
-
-          viewer.showModal();
-
-          document.body.classList.add("viewer-open");
+        if (!images.length) {
+          return;
         }
 
-        closeButton.focus({ preventScroll: true });
+        currentImages = images;
+        currentIndex = 0;
 
-        updateViewerControls();
+        viewerCaption.textContent = trigger.dataset.caption || "";
+        lastFocusedElement = trigger;
 
-        const loader = new Image();
+        updateViewer();
+        viewer.showModal();
 
-        loader.onload = () => {
-          if (
-            activeRequest !== requestId ||
-            !viewer.open
-          ) {
-            return;
-          }
-
-          image.src = imageList[0];
-          image.hidden = false;
-
-          stage.setAttribute("aria-busy", "false");
-          setStatus("");
-        };
-
-        loader.onerror = () => {
-          if (
-            activeRequest !== requestId ||
-            !viewer.open
-          ) {
-            return;
-          }
-
-          stage.setAttribute("aria-busy", "false");
-          image.hidden = true;
-
-          setStatus(
-            "This image could not be loaded. " +
-            "You can try opening the original image below."
-          );
-        };
-
-        loader.src = imageList[0];
+        viewerClose.focus();
       }
 
       function closeViewer() {
-        if (viewer.open) {
-          viewer.close();
-        }
+        viewer.close();
       }
 
-      function resetViewer() {
-        requestId += 1;
-
-        if (!pageWasLocked) {
-          document.body.classList.remove("viewer-open");
-        }
-
-        image.hidden = true;
-        image.removeAttribute("src");
-        image.alt = "";
-
-        caption.textContent = "";
-        originalLink.removeAttribute("href");
-
-        stage.setAttribute("aria-busy", "false");
-        setStatus("");
-
-        viewerImages = [];
-        viewerIndex = 0;
-        updateViewerControls();
-
-        if (lastTrigger?.isConnected) {
-          lastTrigger.focus({ preventScroll: true });
-        }
-
-        lastTrigger = null;
-      }
-
-      triggers.forEach((trigger) => {
-        if (!getSource(trigger)) {
+      function showPreviousImage() {
+        if (currentImages.length < 2) {
           return;
         }
 
-        trigger.disabled = false;
+        currentIndex =
+          (currentIndex - 1 + currentImages.length) % currentImages.length;
 
+        updateViewer();
+      }
+
+      function showNextImage() {
+        if (currentImages.length < 2) {
+          return;
+        }
+
+        currentIndex = (currentIndex + 1) % currentImages.length;
+
+        updateViewer();
+      }
+
+      triggers.forEach((trigger) => {
         trigger.addEventListener("click", () => {
           openViewer(trigger);
         });
       });
 
-      document
-        .querySelectorAll(".achievement-tile-interactive")
-        .forEach((tile) => {
-          const trigger = tile.querySelector(
-            ".achievement-trigger[data-lightbox]"
-          );
-
-          if (trigger && getSource(trigger)) {
-            trigger.disabled = false;
-          }
-        });
-
-      closeButton.addEventListener("click", closeViewer);
-
-      if (prevButton) {
-        prevButton.addEventListener("click", () => {
-          showViewerImage(viewerIndex - 1);
-        });
-      }
-
-      if (nextButton) {
-        nextButton.addEventListener("click", () => {
-          showViewerImage(viewerIndex + 1);
-        });
-      }
-
-      let backdropPointerDown = false;
-
-      function outsideViewer(event) {
-        const bounds = viewer.getBoundingClientRect();
-
-        return (
-          event.clientX < bounds.left ||
-          event.clientX > bounds.right ||
-          event.clientY < bounds.top ||
-          event.clientY > bounds.bottom
-        );
-      }
-
-      viewer.addEventListener("pointerdown", (event) => {
-        backdropPointerDown =
-          event.target === viewer &&
-          outsideViewer(event);
-      });
+      viewerClose.addEventListener("click", closeViewer);
 
       viewer.addEventListener("click", (event) => {
-        if (
-          backdropPointerDown &&
-          event.target === viewer &&
-          outsideViewer(event)
-        ) {
+        if (event.target === viewer) {
+          closeViewer();
+        }
+      });
+
+      viewer.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
           closeViewer();
         }
 
-        backdropPointerDown = false;
+        if (event.key === "ArrowLeft") {
+          showPreviousImage();
+        }
+
+        if (event.key === "ArrowRight") {
+          showNextImage();
+        }
       });
 
-      viewer.addEventListener("close", resetViewer);
+      viewerPrev.addEventListener("click", showPreviousImage);
+      viewerNext.addEventListener("click", showNextImage);
 
-      viewer.addEventListener("keydown", (event) => {
+      viewer.addEventListener("close", () => {
         if (
-          viewer.open &&
-          viewerImages.length > 1 &&
-          event.key === "ArrowLeft"
+          lastFocusedElement &&
+          typeof lastFocusedElement.focus === "function"
         ) {
-          event.preventDefault();
-          showViewerImage(viewerIndex - 1);
-          return;
-        }
-
-        if (
-          viewer.open &&
-          viewerImages.length > 1 &&
-          event.key === "ArrowRight"
-        ) {
-          event.preventDefault();
-          showViewerImage(viewerIndex + 1);
-          return;
-        }
-
-        if (event.key !== "Tab" || !viewer.open) {
-          return;
-        }
-
-        const focusable = Array.from(
-          viewer.querySelectorAll(
-            'button:not([disabled]), a[href], ' +
-            '[tabindex]:not([tabindex="-1"])'
-          )
-        ).filter((element) => {
-          return element.getClientRects().length > 0;
-        });
-
-        if (!focusable.length) {
-          return;
-        }
-
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-
-        if (
-          event.shiftKey &&
-          document.activeElement === first
-        ) {
-          event.preventDefault();
-          last.focus();
-        } else if (
-          !event.shiftKey &&
-          document.activeElement === last
-        ) {
-          event.preventDefault();
-          first.focus();
+          lastFocusedElement.focus();
         }
       });
     }
-
-    /* =====================================================
-       6. Hero and scroll animations
-       ===================================================== */
-
-    function initializeAnimations() {
-      const motionElements = Array.from(
-        document.querySelectorAll("[data-motion]")
-      );
-
-      const heroElements = Array.from(
-        document.querySelectorAll(".hero-enter")
-      );
-
-      const heroPortrait = document.querySelector(
-        ".hero-portrait-image"
-      );
-
-      let observer = null;
-      const pending = new Set();
-
-      function reveal(element) {
-        element.classList.remove("is-pending");
-        element.classList.add("is-visible");
-
-        pending.delete(element);
-
-        if (observer) {
-          observer.unobserve(element);
-        }
-      }
-
-      function clearHeroAnimation(element) {
-        element.classList.remove(
-          "is-pending",
-          "is-entering"
-        );
-      }
-
-      function revealEverything() {
-        if (observer) {
-          observer.disconnect();
-        }
-
-        motionElements.forEach(reveal);
-        heroElements.forEach(clearHeroAnimation);
-
-        if (heroPortrait) {
-          clearHeroAnimation(heroPortrait);
-        }
-      }
-
-      if (reducedMotion.matches) {
-        revealEverything();
-        return;
-      }
-
-      heroElements.forEach((element) => {
-        element.classList.add("is-entering");
-
-        window.setTimeout(() => {
-          clearHeroAnimation(element);
-        }, 1700);
-      });
-
-      if (heroPortrait) {
-        const animatePortrait = () => {
-          if (reducedMotion.matches) {
-            return;
-          }
-
-          heroPortrait.classList.add("is-entering");
-
-          window.setTimeout(() => {
-            clearHeroAnimation(heroPortrait);
-          }, 1000);
-        };
-
-        if (heroPortrait.complete) {
-          if (heroPortrait.naturalWidth > 0) {
-            animatePortrait();
-          }
-        } else {
-          heroPortrait.addEventListener(
-            "load",
-            animatePortrait,
-            { once: true }
-          );
-        }
-      }
-
-      reducedMotion.addEventListener("change", () => {
-        if (reducedMotion.matches) {
-          revealEverything();
-        }
-      });
-
-      if (!("IntersectionObserver" in window)) {
-        motionElements.forEach(reveal);
-        return;
-      }
-
-      try {
-        document
-          .querySelectorAll("[data-stagger]")
-          .forEach((group) => {
-            Array.from(group.children).forEach(
-              (element, index) => {
-                element.style.setProperty(
-                  "--motion-delay",
-                  `${Math.min(index, 3) * 80}ms`
-                );
-              }
-            );
-          });
-
-        observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                reveal(entry.target);
-              }
-            });
-          },
-          {
-            threshold: 0.05,
-            rootMargin: "0px 0px -24px 0px"
-          }
-        );
-
-        motionElements.forEach((element) => {
-          element.classList.add("is-pending");
-          pending.add(element);
-
-          observer.observe(element);
-        });
-
-        document.addEventListener("focusin", (event) => {
-          if (!(event.target instanceof Element)) {
-            return;
-          }
-
-          const parent = event.target.closest(
-            "[data-motion].is-pending"
-          );
-
-          if (parent) {
-            reveal(parent);
-          }
-        });
-
-        let checkQueued = false;
-
-        function checkPendingElements() {
-          const viewportHeight = window.innerHeight;
-
-          Array.from(pending).forEach((element) => {
-            if (element.hidden) {
-              return;
-            }
-
-            const bounds = element.getBoundingClientRect();
-
-            if (
-              bounds.top < viewportHeight - 20 &&
-              bounds.bottom > 0
-            ) {
-              reveal(element);
-            }
-          });
-
-          checkQueued = false;
-        }
-
-        function queuePendingCheck() {
-          if (!checkQueued && pending.size) {
-            checkQueued = true;
-
-            window.requestAnimationFrame(
-              checkPendingElements
-            );
-          }
-        }
-
-        window.addEventListener(
-          "scroll",
-          queuePendingCheck,
-          { passive: true }
-        );
-
-        window.addEventListener(
-          "resize",
-          queuePendingCheck
-        );
-
-        window.setTimeout(checkPendingElements, 200);
-      } catch (error) {
-        revealEverything();
-
-        console.warn(
-          "Entrance animations were disabled; " +
-          "all portfolio content remains visible.",
-          error
-        );
-      }
-    }
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener(
-      "DOMContentLoaded",
-      initializePortfolio,
-      { once: true }
-    );
-  } else {
-    initializePortfolio();
-  }
+  document.addEventListener("DOMContentLoaded", initializePortfolio);
 })();
