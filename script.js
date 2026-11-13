@@ -76,30 +76,6 @@
   window.addEventListener("scroll", spy, { passive: true });
   spy();
 
-  /* ---------- Impact toggles ---------- */
-  const impactToggles = document.querySelectorAll(".impact-toggle");
-  const impactPanels = document.querySelectorAll(".impact-panel");
-
-  const closeAllImpact = () => {
-    impactToggles.forEach((btn) => btn.setAttribute("aria-expanded", "false"));
-    impactPanels.forEach((panel) => (panel.hidden = true));
-  };
-
-  impactToggles.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const targetId = btn.dataset.impactTarget;
-      const panel = document.getElementById(targetId);
-      const isOpen = btn.getAttribute("aria-expanded") === "true";
-
-      closeAllImpact();
-
-      if (!isOpen && panel) {
-        btn.setAttribute("aria-expanded", "true");
-        panel.hidden = false;
-      }
-    });
-  });
-
   /* ---------- Capability tabs ---------- */
   const capabilityTabs = document.querySelectorAll(".capability-tab");
   const capabilityPanels = document.querySelectorAll(
@@ -128,48 +104,33 @@
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      closeAllImpact();
       closeAllCapabilities();
-      closeExperienceDetail();
     }
   });
 
-  /* ---------- Experience — master-detail fade ---------- */
-  const experienceToggles = document.querySelectorAll(".experience-toggle");
-  const experienceDetail = document.getElementById("experience-detail");
-  const experiencePrompt = document.getElementById("experience-detail-prompt");
-  const experienceContents = document.querySelectorAll(
-    ".experience-detail-content"
-  );
+  /* ---------- Referral copy ---------- */
+  const copyReferral = document.getElementById("copy-referral");
+  const referralMessage = document.getElementById("referral-message");
+  const referralStatus = document.getElementById("referral-status");
 
-  const closeExperienceDetail = () => {
-    experienceToggles.forEach((btn) => btn.setAttribute("aria-expanded", "false"));
-    experienceContents.forEach((content) => {
-      content.classList.remove("visible");
-      content.hidden = true;
-    });
-    if (experiencePrompt) {
-      experiencePrompt.hidden = false;
-    }
-  };
+  const referralText =
+    "Revanth Kumar Matta is a Hyderabad-based non-voice operations professional with 6+ years across US healthcare records, member eligibility, customer support, and invoice processing. He is immediately available for healthcare operations, eligibility/enrollment, medical-record request review, and accounts payable support roles. Portfolio: https://revanth-matta.github.io/";
 
-  experienceToggles.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const targetId = btn.dataset.experienceTarget;
-      const content = document.getElementById(`experience-detail-${targetId}`);
-      const isActive = btn.getAttribute("aria-expanded") === "true";
+  copyReferral?.addEventListener("click", async () => {
+    if (!referralStatus) return;
 
-      closeExperienceDetail();
-
-      if (!isActive && content) {
-        btn.setAttribute("aria-expanded", "true");
-        experiencePrompt.hidden = true;
-        content.hidden = false;
-        requestAnimationFrame(() => {
-          content.classList.add("visible");
-        });
+    try {
+      await navigator.clipboard.writeText(referralText);
+      referralStatus.textContent = "Referral message copied to clipboard.";
+      referralStatus.hidden = false;
+    } catch (error) {
+      if (referralMessage) {
+        referralMessage.hidden = false;
       }
-    });
+      referralStatus.textContent =
+        "Copy unavailable — please select and copy the message below.";
+      referralStatus.hidden = false;
+    }
   });
 
   /* ---------- Back to top ---------- */
